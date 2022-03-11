@@ -1,15 +1,25 @@
+"""
+Author: Mauro Lozano
+Last Updated: March 10, 2022
+
+This code is written for a challenge project for CS 109 Winter 2022 at Stanford University. This program
+reads in movie data from a .csv file modified from the the following source:
+https://www.kaggle.com/rounakbanik/the-movies-dataset/version/7?select=movies_metadata.csv
+The function catalogues movie information about budge, revenue, runtime, release date and then determines
+if there exists a correlation between these parameters and the movies' rating.
+Bootstrapping is used to determine if te difference in rating mean is significant.
+
+The program takes a few minutes to run, please be patient.
+"""
+
+
 import csv
 import numpy as np
 from cpi import inflate, update
-# import pandas as pd
-# from datetime import date
-# import matplotlib.pyplot as plt
-# import random
-# import statistics
 
 
+# adjust a number for inflation, using 2021 as the most recent complete year
 def adjust_for_inflation(number, date):
-    # cpi.inflate(past money, year) = current money
     year = date[-4:]
     if '-' in year:
         year = date[:4]
@@ -19,6 +29,7 @@ def adjust_for_inflation(number, date):
     return inflate(number, year)
 
 
+# read the data from teh appropriate .csv file
 def extract_fin_data(data_set):
     # row 19732 is jank, 2 other rows
     filename = 'financial_data.csv'
@@ -26,9 +37,6 @@ def extract_fin_data(data_set):
     with open(filename, newline='') as csvfile:
         datafile = csv.reader(csvfile, delimiter=' ', quotechar='|')
         next(csvfile)
-
-        # index = 0
-        # max_size = 500  # len(datafile)
 
         for row in datafile:
             values = row[0].split(',')
@@ -71,13 +79,9 @@ def extract_fin_data(data_set):
 
             data_set[id_num] = [budget, revenue, runtime, vote_average, vote_count, release_date, popularity]
 
-            # index += 1
-            # if index > max_size - 1:
-            #     break
 
-
+# break up the data into 5 equally sized, ascending groups
 def make_groups(data_set, index):
-    # break it up into 5 percentiles
     rating_index = 3
     groups = []
     for movie_key in data_set:
@@ -130,12 +134,13 @@ def make_groups(data_set, index):
     return group1, group2, group3, group4, group5
 
 
+# determine the mean of a list
 def calcMean(data):
     return sum(data)/len(data)
 
 
+# Run a bootstrap experiment between two populations
 def bootstrap(pop1, pop2):
-    # Run a bootstrap experiment
     n_trials = 10000
     size1 = len(pop1)
     size2 = len(pop2)
@@ -159,7 +164,6 @@ def bootstrap(pop1, pop2):
     totalPop = list.copy(ratings1)
     totalPop.extend(ratings2)
 
-    # print('starting bootstrap')
     for i in range(n_trials):
         sample1 = np.random.choice(totalPop, size1, replace=True)
         sample2 = np.random.choice(totalPop, size2, replace=True)
@@ -178,6 +182,7 @@ def bootstrap(pop1, pop2):
     print("--------------------")
 
 
+# determine the mean difference and the p-value of the difference for a parameter and the movie ratings
 def calc_statistical_diff(data_set, index, run):
 
     if run:
@@ -200,7 +205,6 @@ def calc_statistical_diff(data_set, index, run):
 
 
 def main():
-    # created data_set will have movie_id as key and [rating, budget, box office] as value
     update()
     data_set = {}
     extract_fin_data(data_set)
@@ -214,6 +218,5 @@ def main():
     return 0
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     main()
