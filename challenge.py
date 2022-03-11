@@ -31,7 +31,6 @@ def adjust_for_inflation(number, date):
 
 # read the data from teh appropriate .csv file
 def extract_fin_data(data_set):
-    # row 19732 is jank, 2 other rows
     filename = 'financial_data.csv'
 
     with open(filename, newline='') as csvfile:
