@@ -7,7 +7,7 @@ reads in movie data from a .csv file modified from the the following source:
 https://www.kaggle.com/rounakbanik/the-movies-dataset/version/7?select=movies_metadata.csv
 The function catalogues movie information about budge, revenue, runtime, release date and then determines
 if there exists a correlation between these parameters and the movies' rating.
-Bootstrapping is used to determine if te difference in rating mean is significant.
+Bootstrapping is used to determine if the difference in rating mean is significant.
 
 The program takes a few minutes to run, please be patient.
 """
